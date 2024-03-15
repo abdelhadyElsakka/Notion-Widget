@@ -2,49 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Count Up Timer Widget</title>
+    <title>Count Up Timer</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
             margin: 0;
+            background-color: #f0f4f8;
+            font-family: 'Arial', sans-serif;
         }
-        .timer {
+
+        #dayCounter {
+            font-size: 28px;
+            color: #333333;
+            margin-bottom: 10px;
+        }
+
+        #timer {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-    </style>
-</head>
-<body>
-    <div class="timer">
-        <h2 id="timerName">Custom Name</h2>
-        <div id="countUpTimer">00:00:00</div>
-    </div>
 
-    <script>
-        const startTime = new Date();
-
-        function updateTime() {
-            const now = new Date();
-            const elapsedTime = now - startTime;
-
-            let totalSeconds = Math.floor(elapsedTime / 1000);
-            let totalMinutes = Math.floor(totalSeconds / 60);
-            let totalHours = Math.floor(totalMinutes / 60);
-            let totalDays = Math.floor(totalHours / 24);
-            let totalWeeks = Math.floor(totalDays / 7);
-            let totalMonths = Math.floor(totalDays / 30);  // Approximation
-            let totalYears = Math.floor(totalDays / 365);  // Approximation
-
-            const displayTime = `${totalYears} years, ${totalMonths % 12} months, ${totalWeeks % 4} weeks, ${totalDays % 7} days, ${totalHours % 24} hours, ${totalMinutes % 60} minutes, ${totalSeconds % 60} seconds`;
-            document.getElementById('countUpTimer').textContent = displayTime;
+        .time-unit {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 24px;
+            color: #333333;
         }
 
-        setInterval(updateTime, 1000);
+        .time-unit label {
+            display: block;
+            font-size: 16px;
+            color: #555555;
+        }
+    </style>
+    <script>
+        const startDate = new Date("YYYY-MM-DDThh:mm:ss").getTime();
+
+        setInterval(function() {
+            var now = new Date().getTime();
+            var distance = now - startDate;
+
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("dayCounter").textContent = days + " days";
+            document.getElementById("hours").textContent = hours + "h";
+            document.getElementById("minutes").textContent = minutes + "m";
+            document.getElementById("seconds").textContent = seconds + "s";
+        }, 1000);
     </script>
+</head>
+<body>
+    <div id="dayCounter"></div>
+    <div id="timer">
+        <div class="time-unit"><span id="hours"></span><label>Hours</label></div>
+        <div class="time-unit"><span id="minutes"></span><label>Minutes</label></div>
+        <div class="time-unit"><span id="seconds"></span><label>Seconds</label></div>
+    </div>
 </body>
 </html>
