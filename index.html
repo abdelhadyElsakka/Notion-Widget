@@ -2,28 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Continuous Timer</title>
+    <title>Timer with Firebase</title>
     <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyDPSyB-cVInCkgcETQPl9vlgWu9N9Ad_IY",
-    authDomain: "iron-will-counter.firebaseapp.com",
-    databaseURL: "https://iron-will-counter-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "iron-will-counter",
-    storageBucket: "iron-will-counter.appspot.com",
-    messagingSenderId: "159499197149",
-    appId: "1:159499197149:web:85c944a15a58dc28b1d934"
-  };
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDPSyB-cVInCkgcETQPl9vlgWu9N9Ad_IY",
+            authDomain: "iron-will-counter.firebaseapp.com",
+            databaseURL: "https://iron-will-counter-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "iron-will-counter",
+            storageBucket: "iron-will-counter.appspot.com",
+            messagingSenderId: "159499197149",
+            appId: "1:159499197149:web:85c944a15a58dc28b1d934"
+        };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
-   <style>
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const startTimeRef = ref(database, 'startTime');
+            onValue(startTimeRef, (snapshot) => {
+                const startTime = snapshot.val();
+                if (startTime) {
+                    startTimer(new Date(startTime));
+                } else {
+                    const now = new Date().getTime();
+                    set(startTimeRef, now);
+                    startTimer(new Date(now));
+                }
+            });
+        });
+
+        function startTimer(startDate) {
+            setInterval(() => {
+                const now = new Date().getTime();
+                const distance = now - startDate.getTime();
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").textContent = days;
+                document.getElementById("hours").textContent = hours;
+                document.getElementById("minutes").textContent = minutes;
+                document.getElementById("seconds").textContent = seconds;
+            }, 1000);
+        }
+    </script>
+    <style>
         body {
             display: flex;
             flex-direction: column;
@@ -61,36 +92,5 @@
         <div class="time-unit"><span id="minutes"></span><label>Minutes</label></div>
         <div class="time-unit"><span id="seconds"></span><label>Seconds</label></div>
     </div>
-
-    <script>
-        var startTimeRef = database.ref('startTime');
-        startTimeRef.once('value').then(function(snapshot) {
-            var startTime = snapshot.val();
-            if (startTime) {
-                startTimer(new Date(startTime));
-            } else {
-                var now = new Date().getTime();
-                startTimeRef.set(now);
-                startTimer(new Date(now));
-            }
-        });
-
-        function startTimer(startDate) {
-            setInterval(function() {
-                var now = new Date().getTime();
-                var distance = now - startDate.getTime();
-
-                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                document.getElementById("days").textContent = days;
-                document.getElementById("hours").textContent = hours;
-                document.getElementById("minutes").textContent = minutes;
-                document.getElementById("seconds").textContent = seconds;
-            }, 1000);
-        }
-    </script>
 </body>
 </html>
