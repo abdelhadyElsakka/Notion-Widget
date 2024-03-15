@@ -15,8 +15,11 @@
             font-family: 'Arial', sans-serif;
         }
 
-        #nameInput {
+        #nameInputContainer {
             margin-bottom: 15px;
+        }
+
+        #nameInput {
             font-size: 16px;
             padding: 5px;
         }
@@ -50,9 +53,10 @@
     </style>
 </head>
 <body>
-    <input type="text" id="nameInput" placeholder="Enter timer name" oninput="updateName()">
+    <div id="nameInputContainer">
+        <input type="text" id="nameInput" placeholder="Enter timer name" onkeydown="startTimer(event)">
+    </div>
     <div id="timerName"></div>
-    <div id="dayCounter"></div>
     <div id="timer">
         <div class="time-unit"><span id="hours"></span><label>Hours</label></div>
         <div class="time-unit"><span id="minutes"></span><label>Minutes</label></div>
@@ -60,28 +64,32 @@
     </div>
 
     <script>
-        const startDate = new Date("YYYY-MM-DDThh:mm:ss").getTime();
-        const timerNameElement = document.getElementById("timerName");
+        let timerInterval;
+        function startTimer(event) {
+            if (event.key === "Enter") {
+                const input = document.getElementById("nameInput");
+                const name = input.value.trim();
+                if (name) {
+                    document.getElementById("timerName").textContent = name;
+                    document.getElementById("nameInputContainer").remove();
 
-        function updateName() {
-            const name = document.getElementById("nameInput").value;
-            timerNameElement.textContent = name;
+                    const startDate = new Date().getTime();
+
+                    timerInterval = setInterval(function() {
+                        var now = new Date().getTime();
+                        var distance = now - startDate;
+
+                        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                        document.getElementById("hours").textContent = hours + "h";
+                        document.getElementById("minutes").textContent = minutes + "m";
+                        document.getElementById("seconds").textContent = seconds + "s";
+                    }, 1000);
+                }
+            }
         }
-
-        setInterval(function() {
-            var now = new Date().getTime();
-            var distance = now - startDate;
-
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("dayCounter").textContent = days + " days";
-            document.getElementById("hours").textContent = hours + "h";
-            document.getElementById("minutes").textContent = minutes + "m";
-            document.getElementById("seconds").textContent = seconds + "s";
-        }, 1000);
     </script>
 </body>
 </html>
