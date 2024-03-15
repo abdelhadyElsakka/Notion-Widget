@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Timer</title>
+    <title>Continuous Timer</title>
     <style>
         body {
             display: flex;
@@ -46,7 +46,9 @@
     </div>
 
     <script>
-        const startDate = new Date().getTime();
+        // Set a fixed start date/time for the timer
+        // This date should be set according to when you want the timer to have started counting
+        const startDate = new Date("2023-01-01T00:00:00").getTime();
 
         setInterval(function() {
             var now = new Date().getTime();
@@ -57,10 +59,10 @@
             var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            document.getElementById("days").textContent = days + "d";
-            document.getElementById("hours").textContent = hours + "h";
-            document.getElementById("minutes").textContent = minutes + "m";
-            document.getElementById("seconds").textContent = seconds + "s";
+            document.getElementById("days").textContent = days;
+            document.getElementById("hours").textContent = hours;
+            document.getElementById("minutes").textContent = minutes;
+            document.getElementById("seconds").textContent = seconds;
         }, 1000);
     </script>
 </body>
