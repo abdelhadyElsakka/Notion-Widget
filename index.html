@@ -19,26 +19,14 @@
 
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+
         let timerInterval;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            initializeTimer();
-        });
-
-        function initializeTimer() {
-            const startTimeRef = ref(database, 'startTime');
-            onValue(startTimeRef, (snapshot) => {
-                const startTime = snapshot.val();
-                if (startTime) {
-                    startTimer(new Date(startTime));
-                } else {
-                    resetTimer();
-                }
-            });
-        }
-
         function startTimer(startDate) {
-            clearInterval(timerInterval);
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
             timerInterval = setInterval(() => {
                 const now = new Date().getTime();
                 const distance = now - startDate.getTime();
@@ -60,6 +48,20 @@
             set(ref(database, 'startTime'), now);
             startTimer(new Date(now));
         }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const startTimeRef = ref(database, 'startTime');
+            onValue(startTimeRef, (snapshot) => {
+                const startTime = snapshot.val();
+                if (startTime) {
+                    startTimer(new Date(startTime));
+                } else {
+                    resetTimer();
+                }
+            });
+
+            document.getElementById("resetButton").addEventListener('click', resetTimer);
+        });
     </script>
     <style>
         body {
@@ -78,6 +80,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+            margin-bottom: 20px;
         }
         .time-unit {
             display: inline-block;
@@ -91,14 +94,26 @@
             color: #555555;
         }
         #resetButton {
-            margin-top: 20px;
             padding: 10px 20px;
-            font-size: 16px;
+            background-color: #4CAF50;
             color: white;
-            background-color: #007bff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
         #resetButton:hover {
-            background-color: #
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="timer">
+        <div class="time-unit"><span id="days"></span> <label>Days</label></div>
+        <div class="time-unit"><span id="hours"></span> <label>Hours</label></div>
+        <div class="time-unit"><span id="minutes"></span> <label>Minutes</label></div>
+        <div class="time-unit"><span id="seconds"></span> <label>Seconds</label></div>
+    </div>
+    <button id="resetButton">Try Again</button>
+</body>
+</html>
