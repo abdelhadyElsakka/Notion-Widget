@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <title>Timer with Firebase</title>
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDPSyB-cVInCkgcETQPl9vlgWu9N9Ad_IY",
             authDomain: "iron-will-counter.firebaseapp.com",
@@ -19,26 +17,29 @@
             appId: "1:159499197149:web:85c944a15a58dc28b1d934"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        let timerInterval;
 
-        window.addEventListener('DOMContentLoaded', (event) => {
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeTimer();
+        });
+
+        function initializeTimer() {
             const startTimeRef = ref(database, 'startTime');
             onValue(startTimeRef, (snapshot) => {
                 const startTime = snapshot.val();
                 if (startTime) {
                     startTimer(new Date(startTime));
                 } else {
-                    const now = new Date().getTime();
-                    set(startTimeRef, now);
-                    startTimer(new Date(now));
+                    resetTimer();
                 }
             });
-        });
+        }
 
         function startTimer(startDate) {
-            setInterval(() => {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
                 const now = new Date().getTime();
                 const distance = now - startDate.getTime();
 
@@ -52,6 +53,12 @@
                 document.getElementById("minutes").textContent = minutes;
                 document.getElementById("seconds").textContent = seconds;
             }, 1000);
+        }
+
+        function resetTimer() {
+            const now = new Date().getTime();
+            set(ref(database, 'startTime'), now);
+            startTimer(new Date(now));
         }
     </script>
     <style>
@@ -83,14 +90,15 @@
             font-size: 16px;
             color: #555555;
         }
-    </style>
-</head>
-<body>
-    <div id="timer">
-        <div class="time-unit"><span id="days"></span><label>Days</label></div>
-        <div class="time-unit"><span id="hours"></span><label>Hours</label></div>
-        <div class="time-unit"><span id="minutes"></span><label>Minutes</label></div>
-        <div class="time-unit"><span id="seconds"></span><label>Seconds</label></div>
-    </div>
-</body>
-</html>
+        #resetButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #resetButton:hover {
+            background-color: #
