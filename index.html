@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Count Up Timer</title>
+    <title>Customizable Timer</title>
     <style>
         body {
             display: flex;
@@ -15,7 +15,13 @@
             font-family: 'Arial', sans-serif;
         }
 
-        #dayCounter {
+        #nameInput {
+            margin-bottom: 15px;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        #timerName {
             font-size: 28px;
             color: #333333;
             margin-bottom: 10px;
@@ -42,8 +48,25 @@
             color: #555555;
         }
     </style>
+</head>
+<body>
+    <input type="text" id="nameInput" placeholder="Enter timer name" oninput="updateName()">
+    <div id="timerName"></div>
+    <div id="dayCounter"></div>
+    <div id="timer">
+        <div class="time-unit"><span id="hours"></span><label>Hours</label></div>
+        <div class="time-unit"><span id="minutes"></span><label>Minutes</label></div>
+        <div class="time-unit"><span id="seconds"></span><label>Seconds</label></div>
+    </div>
+
     <script>
         const startDate = new Date("YYYY-MM-DDThh:mm:ss").getTime();
+        const timerNameElement = document.getElementById("timerName");
+
+        function updateName() {
+            const name = document.getElementById("nameInput").value;
+            timerNameElement.textContent = name;
+        }
 
         setInterval(function() {
             var now = new Date().getTime();
@@ -60,13 +83,5 @@
             document.getElementById("seconds").textContent = seconds + "s";
         }, 1000);
     </script>
-</head>
-<body>
-    <div id="dayCounter"></div>
-    <div id="timer">
-        <div class="time-unit"><span id="hours"></span><label>Hours</label></div>
-        <div class="time-unit"><span id="minutes"></span><label>Minutes</label></div>
-        <div class="time-unit"><span id="seconds"></span><label>Seconds</label></div>
-    </div>
 </body>
 </html>
