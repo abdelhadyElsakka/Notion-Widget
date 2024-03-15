@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Up Timer Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .timer {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer">
+        <h2 id="timerName">Custom Name</h2>
+        <div id="countUpTimer">00:00:00</div>
+    </div>
+
+    <script>
+        const startTime = new Date();
+
+        function updateTime() {
+            const now = new Date();
+            const elapsedTime = now - startTime;
+
+            let totalSeconds = Math.floor(elapsedTime / 1000);
+            let totalMinutes = Math.floor(totalSeconds / 60);
+            let totalHours = Math.floor(totalMinutes / 60);
+            let totalDays = Math.floor(totalHours / 24);
+            let totalWeeks = Math.floor(totalDays / 7);
+            let totalMonths = Math.floor(totalDays / 30);  // Approximation
+            let totalYears = Math.floor(totalDays / 365);  // Approximation
+
+            const displayTime = `${totalYears} years, ${totalMonths % 12} months, ${totalWeeks % 4} weeks, ${totalDays % 7} days, ${totalHours % 24} hours, ${totalMinutes % 60} minutes, ${totalSeconds % 60} seconds`;
+            document.getElementById('countUpTimer').textContent = displayTime;
+        }
+
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
